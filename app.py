@@ -13,8 +13,8 @@ if uploaded_file is not None:
     col1, col2 = st.beta_columns(2)
     
     # Convert uploaded BytesIO stream to OpenCV format
-    uploaded_file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    img = cv2.imdecode(uploaded_file_bytes, 1)  # Convert byte to matrix & 1 means read the image in color
+    uploaded_file_bound = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    img = cv2.imdecode(uploaded_file_bound, 1)  # Convert byte to matrix & 1 means read the image in color
     
     # OCR process
     reader = easyocr.Reader(['en'], gpu=False)
@@ -36,7 +36,11 @@ if uploaded_file is not None:
     # Display the OCR result in the right column
     with col2:
         st.write("Recognizing...")
+        
+        # Convert the uploaded BytesIO stream to bytes
+        uploaded_file_bytes = uploaded_file.getvalue()
 
+        reader = easyocr.Reader(['en'], gpu=False)
         result = reader.readtext(uploaded_file_bytes, detail=0, paragraph=True)
 
         df = pd.DataFrame()
