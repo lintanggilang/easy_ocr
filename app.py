@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 
 st.title('OCR App with EasyOCR')
+st.sidebar.info('Created by Lintang Gilang')
 
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
