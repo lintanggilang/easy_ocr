@@ -1,6 +1,5 @@
 import streamlit as st
 import easyocr
-import pandas as pd
 import cv2
 import numpy as np
 from PIL import Image
@@ -11,17 +10,18 @@ st.sidebar.info('Created by Lintang Gilang')
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)  # Updated from beta_columns
     
     # Convert uploaded BytesIO stream to OpenCV format
     uploaded_file_bound = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     img = cv2.imdecode(uploaded_file_bound, 1)  # Convert byte to matrix & 1 means read the image in color
     
-    # OCR process
+    # Initialize OCR reader
     reader = easyocr.Reader(['en'], gpu=False)
-    bound = reader.readtext(img, detail=1, paragraph=False)
+    bounds = reader.readtext(img, detail=1, paragraph=False)
     
-    for (coord, text, prob) in bound:
+    # Drawing bounding boxes on the image
+    for (coord, text, prob) in bounds:
         (topleft, topright, bottomright, bottomleft) = coord
         tx, ty = (int(topleft[0]), int(topleft[1]))
         bx, by = (int(bottomright[0]), int(bottomright[1]))
@@ -39,13 +39,11 @@ if uploaded_file is not None:
     with col2:
         st.write("Recognizing...")
         
-        # Convert the uploaded BytesIO stream to bytes
-        uploaded_file_bytes = uploaded_file.getvalue()
-
-        reader = easyocr.Reader(['en'], gpu=False)
-        result = reader.readtext(uploaded_file_bytes, detail=0, paragraph=True)
+        # Extracting text results
+        results = [text for coord, text, prob in bounds]
 
         df = pd.DataFrame()
-        df['result'] = result
+        df['result'] = results
 
         st.table(df)
+
