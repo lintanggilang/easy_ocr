@@ -21,9 +21,6 @@ if uploaded_file is not None:
     reader = easyocr.Reader(['en'], gpu=False)
     bound = reader.readtext(img, detail=1, paragraph=False)
     
-    reader = easyocr.Reader(['en'], gpu=False)
-    result = reader.readtext(uploaded_file_bytes, detail=0, paragraph=True)
-
     for (coord, text, prob) in bound:
         (topleft, topright, bottomright, bottomleft) = coord
         tx, ty = (int(topleft[0]), int(topleft[1]))
@@ -43,6 +40,9 @@ if uploaded_file is not None:
         
         # Convert the uploaded BytesIO stream to bytes
         uploaded_file_bytes = uploaded_file.getvalue()
+
+        reader = easyocr.Reader(['en'], gpu=False)
+        result = reader.readtext(uploaded_file_bytes, detail=0, paragraph=True)
 
         df = pd.DataFrame()
         df['result'] = result
