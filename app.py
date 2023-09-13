@@ -32,6 +32,7 @@ if uploaded_file is not None:
     
     # Display the uploaded image with bounding boxes in the left column
     with col1:
+        st.write("Detection...")
         st.image(img_pil, caption='Uploaded Image with Bounding Boxes.', use_column_width=True)
     
     # Display the OCR result in the right column
