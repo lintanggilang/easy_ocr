@@ -11,6 +11,11 @@ st.sidebar.info('Created by Lintang Gilang')
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
+    file_type = uploaded_file.type.split('/')[1]
+    if file_type not in ["jpg", "jpeg", "png"]:
+        st.warning('Please upload a valid image format (jpg, jpeg, png) and try again.')
+        return
+
     col1, col2 = st.columns(2)  # Updated from beta_columns
     
     # Convert uploaded BytesIO stream to OpenCV format
@@ -47,4 +52,3 @@ if uploaded_file is not None:
         df['result'] = results
 
         st.table(df)
-
